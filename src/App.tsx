@@ -6,16 +6,16 @@ const API = "https://contact-manager-backend-y8dp.onrender.com";
 interface Contact {
   _id: string;
   name: string;
-  email: string;
+  email?: string;
   phone: string;
-  work: string;
-  nick: string;
+  work?: string;
+  nick?: string;
 }
 
 export default function App() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(false);
-  const [view, setView] = useState("view"); // view | add | profile
+  const [view, setView] = useState<"view" | "add" | "profile">("view");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -26,13 +26,16 @@ export default function App() {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  // ----------------------
   // Fetch all contacts
+  // ----------------------
   const fetchContacts = async () => {
     setLoading(true);
     try {
       const res = await fetch(`${API}/contacts`);
       if (!res.ok) throw new Error("Failed to fetch contacts");
-      setContacts(await res.json());
+      const data = await res.json();
+      setContacts(data);
     } catch (err) {
       console.error(err);
     } finally {
@@ -40,7 +43,9 @@ export default function App() {
     }
   };
 
+  // ----------------------
   // Add new contact
+  // ----------------------
   const addContact = async () => {
     try {
       const res = await fetch(`${API}/contacts`, {
@@ -49,7 +54,7 @@ export default function App() {
         body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error("Failed to add contact");
-      setForm({ name: "", email: "", phone: "", work: "", nick: "" });
+      resetForm();
       fetchContacts();
       setView("view");
     } catch (err) {
@@ -57,7 +62,9 @@ export default function App() {
     }
   };
 
+  // ----------------------
   // Delete contact
+  // ----------------------
   const deleteContact = async (id: string) => {
     try {
       const res = await fetch(`${API}/contacts/${id}`, { method: "DELETE" });
@@ -68,57 +75,76 @@ export default function App() {
     }
   };
 
+  // ----------------------
   // Start editing
+  // ----------------------
   const startEdit = (contact: Contact) => {
     setForm({
       name: contact.name,
-      email: contact.email,
+      email: contact.email || "",
       phone: contact.phone,
-      work: contact.work,
-      nick: contact.nick,
+      work: contact.work || "",
+      nick: contact.nick || "",
     });
     setSelectedContact(contact);
     setIsEditing(true);
     setView("add");
   };
 
+  // ----------------------
   // Update contact
+  // ----------------------
   const updateContact = async () => {
-    if (!selectedContact) return;
-    try {
-      const res = await fetch(`${API}/contacts/${selectedContact._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error("Failed to update contact");
-      setForm({ name: "", email: "", phone: "", work: "", nick: "" });
-      setSelectedContact(null);
-      setIsEditing(false);
-      fetchContacts();
-      setView("view");
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  if (!selectedContact) return;
+  console.log("Updating contact with ID:", selectedContact._id); // <- check this
+  try {
+    const res = await fetch(`${API}/contacts/${selectedContact._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    if (!res.ok) throw new Error("Failed to update contact");
+    resetForm();
+    setSelectedContact(null);
+    setIsEditing(false);
+    fetchContacts();
+    setView("view");
+  } catch (err) {
+    console.error(err);
+  }
+};
 
+
+  // ----------------------
   // View contact profile
+  // ----------------------
   const viewContact = (contact: Contact) => {
     setSelectedContact(contact);
     setView("profile");
   };
 
+  // ----------------------
+  // Reset form
+  // ----------------------
+  const resetForm = () => setForm({ name: "", email: "", phone: "", work: "", nick: "" });
+
+  // ----------------------
+  // Initial load
+  // ----------------------
   useEffect(() => {
     fetchContacts();
   }, []);
 
+  // ----------------------
+  // Render
+  // ----------------------
   return (
     <div className="app-container">
       {/* Sidebar */}
       <aside className="sidebar">
         <nav>
           <button onClick={() => { setView("view"); setIsEditing(false); }}>📒 View Contacts</button>
-          <button onClick={() => { setView("add"); setIsEditing(false); setForm({ name: "", email: "", phone: "", work: "", nick: "" }); }}>➕ Add Contact</button>
+          <button onClick={() => { setView("add"); setIsEditing(false); resetForm(); }}>➕ Add Contact</button>
         </nav>
       </aside>
 
