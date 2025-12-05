@@ -26,30 +26,49 @@ export default function App() {
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  // Fetch all contacts
   const fetchContacts = async () => {
     setLoading(true);
-    const res = await fetch(API + "/contacts");
-    setContacts(await res.json());
-    setLoading(false);
+    try {
+      const res = await fetch(`${API}/contacts`);
+      if (!res.ok) throw new Error("Failed to fetch contacts");
+      setContacts(await res.json());
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Add new contact
   const addContact = async () => {
-    await fetch(API + "/contacts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    setForm({ name: "", email: "", phone: "", work: "", nick: "" });
-    fetchContacts();
-    setView("view");
+    try {
+      const res = await fetch(`${API}/contacts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed to add contact");
+      setForm({ name: "", email: "", phone: "", work: "", nick: "" });
+      fetchContacts();
+      setView("view");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
+  // Delete contact
   const deleteContact = async (id: string) => {
-    await fetch(API + "/contacts/" + id, { method: "DELETE" });
-    fetchContacts();
+    try {
+      const res = await fetch(`${API}/contacts/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete contact");
+      fetchContacts();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
+  // Start editing
   const startEdit = (contact: Contact) => {
     setForm({
       name: contact.name,
@@ -63,22 +82,27 @@ export default function App() {
     setView("add");
   };
 
+  // Update contact
   const updateContact = async () => {
     if (!selectedContact) return;
-
-    await fetch(`${API}/contacts/${selectedContact._id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    setForm({ name: "", email: "", phone: "", work: "", nick: "" });
-    setSelectedContact(null);
-    setIsEditing(false);
-    fetchContacts();
-    setView("view");
+    try {
+      const res = await fetch(`${API}/contacts/${selectedContact._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed to update contact");
+      setForm({ name: "", email: "", phone: "", work: "", nick: "" });
+      setSelectedContact(null);
+      setIsEditing(false);
+      fetchContacts();
+      setView("view");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
+  // View contact profile
   const viewContact = (contact: Contact) => {
     setSelectedContact(contact);
     setView("profile");
@@ -93,8 +117,8 @@ export default function App() {
       {/* Sidebar */}
       <aside className="sidebar">
         <nav>
-          <button onClick={() => setView("view")}>📒 View Contacts</button>
-          <button onClick={() => setView("add")}>➕ Add Contact</button>
+          <button onClick={() => { setView("view"); setIsEditing(false); }}>📒 View Contacts</button>
+          <button onClick={() => { setView("add"); setIsEditing(false); setForm({ name: "", email: "", phone: "", work: "", nick: "" }); }}>➕ Add Contact</button>
         </nav>
       </aside>
 
@@ -117,15 +141,12 @@ export default function App() {
                     <th>Actions</th>
                   </tr>
                 </thead>
-
                 <tbody>
                   {contacts.map((c) => (
                     <tr key={c._id}>
                       <td>
                         <div className="contact-info">
-                          <div className="avatar">
-                            {c.name.charAt(0).toUpperCase()}
-                          </div>
+                          <div className="avatar">{c.name.charAt(0).toUpperCase()}</div>
                           <div>
                             <strong>{c.name}</strong>
                             <div className="email">{c.email}</div>
@@ -153,35 +174,12 @@ export default function App() {
           <div className="card">
             <h1 className="title">{isEditing ? "Edit Contact" : "Add Contact"}</h1>
             <div className="form">
-              <input
-                placeholder="Full Name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-              />
-              <input
-                placeholder="Email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-              />
-              <input
-                placeholder="Phone"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-              />
-              <input
-                placeholder="Work"
-                value={form.work}
-                onChange={(e) => setForm({ ...form, work: e.target.value })}
-              />
-              <input
-                placeholder="Nick Name"
-                value={form.nick}
-                onChange={(e) => setForm({ ...form, nick: e.target.value })}
-              />
-              <button
-                className="add-btn"
-                onClick={isEditing ? updateContact : addContact}
-              >
+              <input placeholder="Full Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+              <input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <input placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              <input placeholder="Work" value={form.work} onChange={(e) => setForm({ ...form, work: e.target.value })} />
+              <input placeholder="Nick Name" value={form.nick} onChange={(e) => setForm({ ...form, nick: e.target.value })} />
+              <button className="add-btn" onClick={isEditing ? updateContact : addContact}>
                 {isEditing ? "Update Contact" : "Add Contact"}
               </button>
             </div>
