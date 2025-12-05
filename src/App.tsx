@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-const API = "http://localhost:5000";
+const API = "https://contact-manager-backend-y8dp.onrender.com";
 
 interface Contact {
   _id: string;
