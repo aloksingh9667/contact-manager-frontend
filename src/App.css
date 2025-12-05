@@ -6,6 +6,7 @@
   background: #eef1f5;
   font-family: Arial, sans-serif;
   overflow: hidden;
+  flex-direction: row;
 }
 
 /* Sidebar */
@@ -16,6 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
 .logo {
@@ -151,6 +153,8 @@
   border: 1px solid #bbb;
   font-size: 15px;
   color: #222;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .add-btn {
@@ -165,4 +169,95 @@
 
 .add-btn:hover {
   background: #2f54c8;
+}
+
+/* ---------------- Responsive Styles ---------------- */
+@media (max-width: 1024px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 10px;
+  }
+
+  .sidebar nav {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .sidebar button {
+    text-align: center;
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .main {
+    padding: 20px;
+  }
+
+  .contact-table th,
+  .contact-table td {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-table th,
+  .contact-table td {
+    font-size: 12px;
+  }
+
+  .avatar {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
+  }
+
+  .main h1 {
+    font-size: 24px;
+  }
+
+  .add-btn {
+    font-size: 15px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .contact-table thead {
+    display: none;
+  }
+
+  .contact-table tr {
+    display: block;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .contact-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+
+  .contact-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .sidebar {
+    flex-direction: column;
+    gap: 10px;
+  }
 }
