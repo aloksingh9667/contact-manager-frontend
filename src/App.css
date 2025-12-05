@@ -1,0 +1,168 @@
+/* App Layout */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background: #eef1f5;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 230px;
+  background: #111;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  color: white;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.sidebar nav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar button {
+  padding: 10px;
+  width: 100%;
+  border: none;
+  background: none;
+  color: #f0f0f0;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sidebar button:hover {
+  background: #333;
+  border-radius: 5px;
+}
+
+/* Main content */
+.main {
+  flex: 1;
+  padding: 30px 40px;
+  width: 100%;
+  overflow-y: auto;
+  color: #222;
+  box-sizing: border-box;
+}
+
+.main h1 {
+  color: #1a1a1a;
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+/* Card Container */
+.card {
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px #ccc;
+  width: 100%;
+  max-width: 100%;
+  color: #222;
+  box-sizing: border-box;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2a2a2a;
+}
+
+/* Table Styling */
+.contact-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.contact-table th {
+  text-align: left;
+  padding: 10px;
+  background: #f2f2f2;
+  border-bottom: 2px solid #ddd;
+  color: #333;
+}
+
+.contact-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  color: #222;
+}
+
+/* Contact row layout */
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 45px;
+  height: 45px;
+  background: #dcdcdc;
+  color: #444;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.email {
+  font-size: 12px;
+  color: #777;
+}
+
+/* Action Buttons */
+.actions button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.view-btn { color: #2ecc71; }
+.edit-btn { color: #3498db; }
+.delete-btn { color: #e74c3c; }
+
+/* Add/Edit Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form input {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  font-size: 15px;
+  color: #222;
+}
+
+.add-btn {
+  padding: 12px;
+  background: #4169e1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.add-btn:hover {
+  background: #2f54c8;
+}
